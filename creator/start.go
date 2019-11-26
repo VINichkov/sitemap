@@ -142,14 +142,24 @@ func max_page(count int) int{
 func create_files(count int, index *int, object models.ObjectRepository, url string) error {
 	for i:=1; i<=count; i++{
 
+		file, err := os.Create(Path + fmt.Sprintf("sitemaps%d.xml",*index))
+		if err != nil {
+			return err
+		}
+
+		file.WriteString("<?xml version=\"1.0\" encoding=\"UTF-8\"?><urlset xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\">")
+
 		entities, err := object.ObjectsForSitemap(i, NumberOfItems)
+
 		if err != nil {
 			return err
 		}
-		err = ioutil.WriteFile(Path + fmt.Sprintf("sitemaps%d.xml",*index), viewes.XMLConteiner(url, entities), 0644)
-		if err != nil {
-			return err
+		for _, entity := range *entities {
+			file.WriteString(*entity.XML(url))
 		}
+
+		file.WriteString("</urlset>")
+		defer file.Close()
 		*index +=1
 	}
 	return nil
