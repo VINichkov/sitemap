@@ -34,7 +34,7 @@ func (l *DbCompanyWithJobsRepo) Count()(int, error){
 func (l *DbCompanyWithJobsRepo)ObjectsForSitemap(page int, limit int)(*[]entity.ResQuery,error){
 	t := time.Now()
 	offset:= (page - 1) *limit
-	query := fmt.Sprintf("select company_id as id ,max(updated_at) as updated_at from jobs  group by company_id limit %d  OFFSET %d", limit, offset )
+	query := fmt.Sprintf("select company_id as id ,max(updated_at) as updated_at from jobs group by company_id limit %d  OFFSET %d", limit, offset )
 	result := &[]entity.ResQuery{}
 	err := l.Conn.Select(result, query)
 	log.Debug().Msg(fmt.Sprintf("query: %s , %d ms",query, time.Now().Sub(t).Milliseconds()))
